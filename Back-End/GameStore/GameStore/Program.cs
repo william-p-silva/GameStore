@@ -22,6 +22,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddScoped<UsuarioService>();
+builder.Services.AddScoped<CategoriaService>();
 
 
 
@@ -84,8 +85,8 @@ builder.Services.AddAuthentication(options =>
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
 
-        ValidIssuer = jwtSettings["Issuer"],
-        ValidAudience = jwtSettings["Audience"],
+        ValidIssuer = jwtSettings["Issuer"]!,
+        ValidAudience = jwtSettings["Audience"]!,
         IssuerSigningKey = new SymmetricSecurityKey(
             Encoding.UTF8.GetBytes(key)
         )
