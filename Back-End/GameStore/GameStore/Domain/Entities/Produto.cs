@@ -1,4 +1,6 @@
-﻿namespace GameStore.Domain.Entities
+﻿using System.Text.Json.Serialization;
+
+namespace GameStore.Domain.Entities
 {
     public class Produto
     {
@@ -11,7 +13,8 @@
 
 
         //Relacionamento FK
-        public int? CategoriaId {  get; set; } 
+        public int? CategoriaId {  get; set; }
+        [JsonIgnore]
         public Categoria? Categoria { get; set; }
 
         public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
