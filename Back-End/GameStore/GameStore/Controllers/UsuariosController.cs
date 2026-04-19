@@ -49,11 +49,64 @@ namespace GameStore.Controllers
 
         }
 
-        [Authorize] [HttpGet("protegido")]
-        public IActionResult Protegido()
+        [HttpGet]
+        public async Task<IActionResult> Listar()
         {
-            return Ok("Acesso autorizado");
+            try
+            {
+                var usuarios = await _service.Listar();
+                return Ok(usuarios);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
+        [HttpGet("{id:int}")]
+        public async Task<IActionResult> BuscarId(int id)
+        {
+            try
+            {
+                var usuario = await _service.BuscarId(id);
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
+        [Authorize]
+        [HttpDelete("{id:int}")]
+        public async Task<IActionResult> Remover(int id)
+        {
+            try
+            {
+                await _service.Remover(id);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [Authorize]
+        [HttpPut("{id:int}")]
+        public async Task<IActionResult> Atualizar(int id, UsuarioUpdateDto dto)
+        {
+            try
+            {
+                await _service.Atualizar(id, dto);
+                return NoContent();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

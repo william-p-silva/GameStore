@@ -85,5 +85,38 @@ namespace GameStore.Application.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
 
         }
+
+        public async Task Remover(int id)
+        {
+            var user = await _context.Usuarios.FindAsync(id);
+            if (user == null)
+                throw new ArgumentException("Usuário inexistente");
+            _context.Usuarios.Remove(user);
+            await _context.SaveChangesAsync();
+
+        }
+
+        public async Task<List<Usuario>> Listar()
+        {
+            return await _context.Usuarios.ToListAsync();
+        }
+
+        public async Task<Usuario?> BuscarId(int id)
+        {
+            return await _context.Usuarios.FindAsync(id);
+        }
+
+
+        public async Task Atualizar(int id, UsuarioUpdateDto dto)
+        {
+            var user = await _context.Usuarios.FindAsync(id);
+            if (user == null)
+                throw new ArgumentException("Usuário não encontrado");
+
+            user.Nome = dto.Nome;
+            user.Email = dto.Email;
+            user.SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.NovaSenha);
+            await _context.SaveChangesAsync();
+        }
     }
 }
