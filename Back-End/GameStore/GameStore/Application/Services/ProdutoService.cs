@@ -8,14 +8,12 @@ namespace GameStore.Application.Services
     public class ProdutoService
     {
         private readonly AppDbContext _context;
-        private readonly CategoriaService _service;
-        public ProdutoService(AppDbContext context, CategoriaService service)
+        public ProdutoService(AppDbContext context)
         {
             _context = context;
-            _service = service;
         }
 
-        public async Task<Produto> Criar(ProdutoCreateDto dto)
+        public async Task<ProdutoResponseDto> Criar(ProdutoCreateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Nome) || string.IsNullOrWhiteSpace(dto.Descricao))
                 throw new ArgumentNullException("Produto Inválido");
@@ -23,7 +21,7 @@ namespace GameStore.Application.Services
             if (dto.Estoque < 0 || dto.Preco <= 0)
                 throw new ArgumentException("Estoque ou preço Invalido");
 
-            var categoria = await _service.BuscarId(dto.CategoriaId);
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(e => e.Id == dto.CategoriaId);
 
             if (categoria == null)
                 throw new ArgumentNullException("Categoria Inexistente");
@@ -41,20 +39,49 @@ namespace GameStore.Application.Services
 
             _context.Produtos.Add(produto);
             await _context.SaveChangesAsync();
-            return produto;
+            return new ProdutoResponseDto
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Preco = produto.Preco,
+                Estoque = produto.Estoque,
+                Ativo = produto.Ativo,
+                Descricao = produto.Descricao,
+                CategoriaNome = categoria.Nome,
+                CategoriaId = produto.CategoriaId
+            };
 
         }
 
-        public async Task<List<Produto>> Listar()
+        public async Task<List<ProdutoResponseDto>> Listar()
         {
-            return await _context.Produtos
-                .Include(e => e.Categoria).ToListAsync();
+            return await _context.Produtos.Select(produto => new ProdutoResponseDto
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Preco = produto.Preco,
+                Estoque = produto.Estoque,
+                Ativo = produto.Ativo,
+                Descricao = produto.Descricao,
+                CategoriaNome = produto.Categoria.Nome,
+                CategoriaId = produto.CategoriaId
+
+            }).ToListAsync();
         }
 
-        public async Task<Produto?> BuscarId(int id)
+        public async Task<ProdutoResponseDto?> BuscarId(int id)
         {
-            return await _context.Produtos
-                .Include(e => e.Categoria).FirstOrDefaultAsync(p => p.Id == id);
+            return await _context.Produtos.Select(produto => new ProdutoResponseDto
+            {
+                Id = produto.Id,
+                Nome = produto.Nome,
+                Preco = produto.Preco,
+                Estoque = produto.Estoque,
+                Ativo = produto.Ativo,
+                Descricao = produto.Descricao,
+                CategoriaNome = produto.Categoria.Nome,
+                CategoriaId = produto.CategoriaId
+            }).FirstOrDefaultAsync(p => p.Id == id);
         }
 
         public async Task Atualizar(int id, ProdutoUpdateDto dto)
@@ -69,8 +96,8 @@ namespace GameStore.Application.Services
 
             if (dto.Estoque < 0 || dto.Preco <= 0)
                 throw new ArgumentException("Estoque ou preço Invalido");
-            
-            var categoria = await _service.BuscarId(dto.CategoriaId);
+
+            var categoria = await _context.Categorias.FirstOrDefaultAsync(e => e.Id == dto.CategoriaId);
 
             if (categoria == null)
                 throw new ArgumentNullException("Categoria Inexistente");

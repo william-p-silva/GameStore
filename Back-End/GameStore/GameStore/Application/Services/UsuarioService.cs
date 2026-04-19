@@ -19,7 +19,7 @@ namespace GameStore.Application.Services
         {
             _context = context;
         }
-        public async Task<Usuario> CriarUsuario(UsuarioCreateDto dto)
+        public async Task<UsuarioResponseDto> CriarUsuario(UsuarioCreateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
                 throw new ArgumentException("O email é obrigatório.");
@@ -37,9 +37,16 @@ namespace GameStore.Application.Services
                 Email = dto.Email.ToLower().Trim(),
                 SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
             };
+
             _context.Usuarios.Add(usuario);
             await _context.SaveChangesAsync();
-            return usuario;
+
+            return  new UsuarioResponseDto
+            {
+                Nome = usuario.Nome,
+                Email = usuario.Email.ToLower().Trim(),
+                Id = usuario.Id,
+            };
         }
 
         public async Task<string> Login(LoginUsuarioDto dto, IConfiguration config)
@@ -83,7 +90,6 @@ namespace GameStore.Application.Services
             );
 
             return new JwtSecurityTokenHandler().WriteToken(token);
-
         }
 
         public async Task Remover(int id)
@@ -96,14 +102,24 @@ namespace GameStore.Application.Services
 
         }
 
-        public async Task<List<Usuario>> Listar()
+        public async Task<List<UsuarioResponseDto>> Listar()
         {
-            return await _context.Usuarios.ToListAsync();
+            return await _context.Usuarios.Select(user => new UsuarioResponseDto
+            {
+                Id = user.Id,
+                Nome = user.Nome,
+                Email = user.Email
+            }).ToListAsync();
         }
 
-        public async Task<Usuario?> BuscarId(int id)
+        public async Task<UsuarioResponseDto?> BuscarId(int id)
         {
-            return await _context.Usuarios.FindAsync(id);
+            return await _context.Usuarios.Select(user => new UsuarioResponseDto
+            {
+                Id = user.Id,
+                Nome = user.Nome,
+                Email = user.Email,
+            }).FirstOrDefaultAsync(p => p.Id == id);
         }
 
 

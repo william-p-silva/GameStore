@@ -13,9 +13,9 @@ namespace GameStore.Domain.Entities
 
 
         //Relacionamento FK
-        public int? CategoriaId {  get; set; }
+        public int CategoriaId {  get; set; }
         [JsonIgnore]
-        public Categoria? Categoria { get; set; }
+        public Categoria? Categoria { get; set; } 
 
         public DateTime CriadoEm { get; set; } = DateTime.UtcNow;
     }
