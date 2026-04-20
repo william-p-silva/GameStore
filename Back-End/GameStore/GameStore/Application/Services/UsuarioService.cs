@@ -2,6 +2,7 @@
 using GameStore.Application.DTOs;
 using GameStore.Application.DTOs.Usuario;
 using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -114,18 +115,15 @@ namespace GameStore.Application.Services
 
             filtro.Normalizar();
 
-            var total = await query.CountAsync();
-
-            query = query.Skip((filtro.Page - 1) * filtro.PageSize).Take(filtro.PageSize);
-
-            var lista = await query.Select(user => new UsuarioResponseDto
-            {
-                Id = user.Id,
-                Nome = user.Nome,
-                Email = user.Email
-            }).ToListAsync();
-
-            return new PageResultDto<UsuarioResponseDto>(lista, total, filtro.Page, filtro.PageSize);
+            return await query.ToPagedResultAsync(
+                filtro.Page,
+                filtro.PageSize,
+                user => new UsuarioResponseDto
+                {
+                    Id = user.Id,
+                    Nome = user.Nome,
+                    Email = user.Email
+                });
         }
 
         public async Task<UsuarioResponseDto?> BuscarId(int id)

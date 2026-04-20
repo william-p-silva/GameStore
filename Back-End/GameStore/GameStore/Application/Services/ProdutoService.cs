@@ -3,6 +3,7 @@ using GameStore.Application.DTOs.Produto;
 using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using GameStore.Helpers;
 
 namespace GameStore.Application.Services
 {
@@ -63,28 +64,23 @@ namespace GameStore.Application.Services
                 query = query.Where(p => p.Nome.Contains(filtro.Nome));
             if (filtro.CategoriaId.HasValue)
                 query = query.Where(e => e.CategoriaId == filtro.CategoriaId);
+
             filtro.Normalizar();
 
-            query = query.Include(p => p.Categoria);
-            
-            var total = await query.CountAsync();
-
-            query = query.Skip((filtro.Page -1 ) * filtro.PageSize).Take(filtro.PageSize);
-
-            var lista = await query.Select(produto => new ProdutoResponseDto
-            {
-                Id = produto.Id,
-                Nome = produto.Nome,
-                Preco = produto.Preco,
-                Estoque = produto.Estoque,
-                Ativo = produto.Ativo,
-                Descricao = produto.Descricao,
-                CategoriaNome = produto.Categoria.Nome,
-                CategoriaId = produto.CategoriaId
-            }).ToListAsync();
-
-            return new PageResultDto<ProdutoResponseDto>(lista, total, filtro.Page, filtro.PageSize);
-            
+            return await query.ToPagedResultAsync(
+                filtro.Page,
+                filtro.PageSize,
+                produto => new ProdutoResponseDto
+                {
+                    Id = produto.Id,
+                    Nome = produto.Nome,
+                    Preco = produto.Preco,
+                    Estoque = produto.Estoque,
+                    Ativo = produto.Ativo,
+                    Descricao = produto.Descricao,
+                    CategoriaNome = produto.Categoria.Nome,
+                    CategoriaId = produto.CategoriaId
+                });
         }
 
         public async Task<ProdutoResponseDto?> BuscarId(int id)
@@ -119,9 +115,9 @@ namespace GameStore.Application.Services
 
             if (categoria == null)
                 throw new ArgumentNullException("Categoria Inexistente");
-                        
+
             produto.Nome = dto.Nome;
-            produto.Descricao  = dto.Descricao;
+            produto.Descricao = dto.Descricao;
             produto.Preco = dto.Preco;
             produto.Estoque = dto.Estoque;
             produto.CategoriaId = dto.CategoriaId;
