@@ -1,4 +1,5 @@
-﻿using GameStore.Application.DTOs.Categoria;
+﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Categoria;
 using GameStore.Application.DTOs.Produto;
 using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
@@ -31,21 +32,49 @@ namespace GameStore.Application.Services
             };
         }
 
-        public async Task<List<CategoriaResponseDto>> Listar()
+        public async Task<PageResultDto<CategoriaResponseDto>> Listar(CategoriaFiltroDto filtro)
         {
-            return await _context.Categorias.Select(c => new CategoriaResponseDto
+            var query = _context.Categorias.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filtro.Nome))
+                query = query.Where(p => p.Nome.Contains(filtro.Nome));
+
+            var total = await query.CountAsync();
+
+            filtro.Normalizar();
+
+            query = query.Skip((filtro.Page - 1) * filtro.PageSize).Take(filtro.PageSize);
+
+            List<CategoriaResponseDto> lista;
+
+            if (filtro.Produtos == true)
             {
-                Nome = c.Nome,
-                Id = c.Id,
-                Produtos = c.Produtos.Select(p => new ProdutoResumoDto
+                lista = await query.Select(c => new CategoriaResponseDto
                 {
-                    Id = p.Id,
-                    Nome = p.Nome,
-                    Preco = p.Preco,
-                    Estoque = p.Estoque,
-                    Ativo = p.Ativo
-                }).ToList()
-            }).ToListAsync();
+                    Nome = c.Nome,
+                    Id = c.Id,
+                    QuantidadeProdutos = c.Produtos.Count(),
+                    Produtos = c.Produtos.Select(p => new ProdutoResumoDto
+                    {
+                        Id = p.Id,
+                        Nome = p.Nome,
+                        Preco = p.Preco,
+                        Estoque = p.Estoque,
+                        Ativo = p.Ativo
+                    }).ToList()
+                }).ToListAsync();
+            }
+            else //CASO 2: NÃO trazer produtos, só quantidade
+            {
+                lista = await query.Select(c => new CategoriaResponseDto
+                {
+                    Nome = c.Nome,
+                    Id = c.Id,
+                    QuantidadeProdutos = c.Produtos.Count()
+                }).ToListAsync();
+            }        
+
+            return new PageResultDto<CategoriaResponseDto>(lista, total, filtro.Page, filtro.PageSize);
         }
 
         public async Task<CategoriaResponseDto?> BuscarId(int id)

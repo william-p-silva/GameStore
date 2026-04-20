@@ -63,10 +63,7 @@ namespace GameStore.Application.Services
                 query = query.Where(p => p.Nome.Contains(filtro.Nome));
             if (filtro.CategoriaId.HasValue)
                 query = query.Where(e => e.CategoriaId == filtro.CategoriaId);
-            if (filtro.Page <= 0)
-                filtro.Page = 1;
-            if (filtro.PageSize > 50)
-                filtro.PageSize = 50;
+            filtro.Normalizar();
 
             query = query.Include(p => p.Categoria);
             
@@ -84,7 +81,6 @@ namespace GameStore.Application.Services
                 Descricao = produto.Descricao,
                 CategoriaNome = produto.Categoria.Nome,
                 CategoriaId = produto.CategoriaId
-
             }).ToListAsync();
 
             return new PageResultDto<ProdutoResponseDto>(lista, total, filtro.Page, filtro.PageSize);

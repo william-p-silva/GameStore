@@ -8,5 +8,6 @@ namespace GameStore.Application.DTOs.Categoria
         public int Id { get; set; }
         public string Nome { get; set; } = string.Empty;
         public List<ProdutoResumoDto> Produtos { get; set; } = new();
+        public int? QuantidadeProdutos { get; set; }
     }
 }

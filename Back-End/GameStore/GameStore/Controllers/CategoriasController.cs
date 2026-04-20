@@ -29,11 +29,11 @@ namespace GameStore.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Listar()
+        public async Task<IActionResult> Listar([FromQuery] CategoriaFiltroDto filtro)
         {
             try
             {
-                var categorias = await _service.Listar();
+                var categorias = await _service.Listar(filtro);
                 return Ok(categorias);
             }
             catch (Exception ex)

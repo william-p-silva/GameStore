@@ -1,13 +1,14 @@
-﻿using GameStore.Domain.Entities;
+﻿using BCrypt.Net;
+using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Usuario;
+using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using BCrypt.Net;
-
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
-using GameStore.Application.DTOs.Usuario;
 
 
 namespace GameStore.Application.Services
@@ -52,7 +53,7 @@ namespace GameStore.Application.Services
         public async Task<string> Login(LoginUsuarioDto dto, IConfiguration config)
         {
             var usuario = await _context.Usuarios
-                .FirstOrDefaultAsync(u => u.Email == dto.Email.Trim().ToLower());
+                .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
             if (usuario == null)
                 throw new ArgumentException("usuário ou senha inválido");
@@ -102,14 +103,29 @@ namespace GameStore.Application.Services
 
         }
 
-        public async Task<List<UsuarioResponseDto>> Listar()
+        public async Task<PageResultDto<UsuarioResponseDto>> Listar(UsuarioFiltroDto filtro)
         {
-            return await _context.Usuarios.Select(user => new UsuarioResponseDto
+            var query = _context.Usuarios.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(filtro.Nome))
+                query = query.Where(e => e.Nome.Contains(filtro.Nome));
+            if (!string.IsNullOrWhiteSpace(filtro.Email))
+                query = query.Where(p => p.Email.Contains(filtro.Email));
+
+            filtro.Normalizar();
+
+            var total = await query.CountAsync();
+
+            query = query.Skip((filtro.Page - 1) * filtro.PageSize).Take(filtro.PageSize);
+
+            var lista = await query.Select(user => new UsuarioResponseDto
             {
                 Id = user.Id,
                 Nome = user.Nome,
                 Email = user.Email
             }).ToListAsync();
+
+            return new PageResultDto<UsuarioResponseDto>(lista, total, filtro.Page, filtro.PageSize);
         }
 
         public async Task<UsuarioResponseDto?> BuscarId(int id)
