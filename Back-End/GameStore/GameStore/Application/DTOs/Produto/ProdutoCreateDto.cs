@@ -1,7 +1,7 @@
 ﻿using GameStore.Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
-namespace GameStore.Application.DTOs
+namespace GameStore.Application.DTOs.Produto
 {
     public class ProdutoCreateDto
     {

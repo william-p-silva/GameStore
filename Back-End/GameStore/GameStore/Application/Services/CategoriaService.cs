@@ -1,4 +1,5 @@
-﻿using GameStore.Application.DTOs;
+﻿using GameStore.Application.DTOs.Categoria;
+using GameStore.Application.DTOs.Produto;
 using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;

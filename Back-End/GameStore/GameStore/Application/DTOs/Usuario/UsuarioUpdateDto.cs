@@ -1,4 +1,4 @@
-﻿namespace GameStore.Application.DTOs
+﻿namespace GameStore.Application.DTOs.Usuario
 {
     public class UsuarioUpdateDto
     {

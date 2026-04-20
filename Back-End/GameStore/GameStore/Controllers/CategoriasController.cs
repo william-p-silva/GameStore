@@ -1,4 +1,4 @@
-﻿using GameStore.Application.DTOs;
+﻿using GameStore.Application.DTOs.Categoria;
 using GameStore.Application.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -83,7 +83,7 @@ namespace GameStore.Controllers
             }
             catch (Exception ex)
             {
-                return BadRequest();
+                return BadRequest(ex.Message);
             }
         }
     }

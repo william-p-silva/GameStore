@@ -1,4 +1,4 @@
-﻿using GameStore.Application.DTOs;
+﻿using GameStore.Application.DTOs.Produto;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
@@ -45,11 +45,11 @@ namespace GameStore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> Listar()
+        public async Task<IActionResult> Listar([FromQuery] ProdutoFiltroDto filtro)
         {
             try
             {
-                var produtos = await _service.Listar();
+                var produtos = await _service.Listar(filtro);
                 return Ok(produtos);
             }
             catch (Exception ex)

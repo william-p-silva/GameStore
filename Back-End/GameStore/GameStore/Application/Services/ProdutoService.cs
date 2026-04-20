@@ -1,4 +1,5 @@
 ﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Produto;
 using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -53,9 +54,27 @@ namespace GameStore.Application.Services
 
         }
 
-        public async Task<List<ProdutoResponseDto>> Listar()
+        public async Task<PageResultDto<ProdutoResponseDto>> Listar(ProdutoFiltroDto filtro)
         {
-            return await _context.Produtos.Select(produto => new ProdutoResponseDto
+            var query = _context.Produtos.AsQueryable();
+
+
+            if (!string.IsNullOrWhiteSpace(filtro.Nome))
+                query = query.Where(p => p.Nome.Contains(filtro.Nome));
+            if (filtro.CategoriaId.HasValue)
+                query = query.Where(e => e.CategoriaId == filtro.CategoriaId);
+            if (filtro.Page <= 0)
+                filtro.Page = 1;
+            if (filtro.PageSize > 50)
+                filtro.PageSize = 50;
+
+            query = query.Include(p => p.Categoria);
+            
+            var total = await query.CountAsync();
+
+            query = query.Skip((filtro.Page -1 ) * filtro.PageSize).Take(filtro.PageSize);
+
+            var lista = await query.Select(produto => new ProdutoResponseDto
             {
                 Id = produto.Id,
                 Nome = produto.Nome,
@@ -67,6 +86,9 @@ namespace GameStore.Application.Services
                 CategoriaId = produto.CategoriaId
 
             }).ToListAsync();
+
+            return new PageResultDto<ProdutoResponseDto>(lista, total, filtro.Page, filtro.PageSize);
+            
         }
 
         public async Task<ProdutoResponseDto?> BuscarId(int id)

@@ -1,5 +1,4 @@
-﻿using GameStore.Application.DTOs;
-using GameStore.Domain.Entities;
+﻿using GameStore.Domain.Entities;
 using GameStore.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using BCrypt.Net;
@@ -8,6 +7,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GameStore.Application.DTOs.Usuario;
 
 
 namespace GameStore.Application.Services

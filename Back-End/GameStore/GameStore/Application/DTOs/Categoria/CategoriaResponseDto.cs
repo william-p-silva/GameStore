@@ -1,6 +1,7 @@
-﻿using GameStore.Domain.Entities;
+﻿using GameStore.Application.DTOs.Produto;
+using GameStore.Domain.Entities;
 
-namespace GameStore.Application.DTOs
+namespace GameStore.Application.DTOs.Categoria
 {
     public class CategoriaResponseDto
     {
