@@ -9,7 +9,7 @@ namespace GameStore.Infrastructure.Data
         public DbSet<Usuario> Usuarios => Set<Usuario>();
         public DbSet<Produto> Produtos => Set<Produto>();
         public DbSet<Categoria> Categorias => Set<Categoria>();
-        public DbSet<Carrinho> Carrinho => Set<Carrinho>();
+        public DbSet<Carrinho> Carrinhos => Set<Carrinho>();
         public DbSet<CarrinhoItem> CarrinhoItems => Set<CarrinhoItem>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
