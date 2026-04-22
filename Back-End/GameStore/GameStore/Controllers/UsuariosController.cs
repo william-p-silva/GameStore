@@ -33,6 +33,20 @@ namespace GameStore.Controllers
             }
         }
 
+        [HttpPost("criarAdmin")]
+        public async Task<IActionResult> CriarAdmin(UsuarioCreateDto dto)
+        {
+            try
+            {
+                var usuario = await _service.CriarUsuarioAdmin(dto);
+                return Ok(usuario);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUsuarioDto dto)

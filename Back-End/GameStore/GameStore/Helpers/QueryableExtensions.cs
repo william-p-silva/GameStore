@@ -8,9 +8,9 @@ namespace GameStore.Helpers
     public static class QueryableExtensions
     {
         public static async Task<PageResultDto<TDestino>> ToPagedResultAsync<TOrigem, TDestino>(
-      this IQueryable<TOrigem> query,
-      int page,
-      int pageSize,
+          this IQueryable<TOrigem> query,
+          int page,
+          int pageSize,
       Expression<Func<TOrigem, TDestino>> selector
   )
         {

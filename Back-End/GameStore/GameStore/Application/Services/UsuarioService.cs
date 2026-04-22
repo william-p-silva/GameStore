@@ -21,6 +21,8 @@ namespace GameStore.Application.Services
         {
             _context = context;
         }
+
+
         public async Task<UsuarioResponseDto> CriarUsuario(UsuarioCreateDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
@@ -46,6 +48,39 @@ namespace GameStore.Application.Services
             return  new UsuarioResponseDto
             {
                 Nome = usuario.Nome,
+                Role = usuario.Role,
+                Email = usuario.Email.ToLower().Trim(),
+                Id = usuario.Id,
+            };
+        }
+
+        public async Task<UsuarioResponseDto> CriarUsuarioAdmin(UsuarioCreateDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                throw new ArgumentException("O email é obrigatório.");
+
+            if (string.IsNullOrWhiteSpace(dto.Senha))
+                throw new ArgumentException("A senha é obrigatória.");
+
+            var existe = await _context.Usuarios.AnyAsync(u => u.Email == dto.Email.ToLower().Trim());
+            if (existe)
+                throw new ArgumentException("Já existe um usuário com este email.");
+
+            var usuario = new Usuario
+            {
+                Nome = dto.Nome.Trim(),
+                Email = dto.Email.ToLower().Trim(),
+                Role = Roles.Admin,
+                SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha)
+            };
+
+            _context.Usuarios.Add(usuario);
+            await _context.SaveChangesAsync();
+
+            return new UsuarioResponseDto
+            {
+                Nome = usuario.Nome,
+                Role = usuario.Role,
                 Email = usuario.Email.ToLower().Trim(),
                 Id = usuario.Id,
             };
