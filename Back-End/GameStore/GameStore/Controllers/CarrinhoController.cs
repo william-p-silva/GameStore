@@ -20,27 +20,68 @@ namespace GameStore.Controllers
         [HttpPost("carrinho")]
         public async Task<IActionResult> ObterCarrinho()
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var carrinho = await _service.ObterOuCriarCarrinho(userId);
-            return Ok(carrinho);
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var carrinho = await _service.ObterOuCriarCarrinho(userId);
+                return Ok(carrinho);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [Authorize]
         [HttpPost("adicionarItem")]
         public async Task<IActionResult> AdicionatItemCarrinho(CarrinhoAdcionarItemDto dto)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _service.AdicionarProduto(dto, userId);
-            return NoContent();
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var carrinho = await _service.AdicionarProduto(dto, userId);
+                return Ok(carrinho);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
 
         [Authorize]
         [HttpDelete("removerItem")]
         public async Task<IActionResult> RemoverItemCarrinho(CarrinhoRemoverItemDto dto)
         {
-            var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            await _service.RemoverProduto(dto, userId);
-            return NoContent();
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var carrinho = await _service.RemoverProduto(dto, userId);
+                return Ok(carrinho);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
+        }
+
+        [Authorize]
+        [HttpPut("atualizarItem")]
+        public async Task<IActionResult> AtualizarItemCarrinho(CarrinhoAtualizarItemDto dto)
+        {
+            try
+            {
+                var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var carrinho = await _service.AtualizarItemCarrinho(dto, userId);
+                return Ok(carrinho);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            
         }
     }
 }

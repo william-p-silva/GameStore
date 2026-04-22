@@ -11,10 +11,41 @@ namespace GameStore.Infrastructure.Data
         public DbSet<Categoria> Categorias => Set<Categoria>();
         public DbSet<Carrinho> Carrinhos => Set<Carrinho>();
         public DbSet<CarrinhoItem> CarrinhoItems => Set<CarrinhoItem>();
+        public DbSet<Pedido> Pedidos => Set<Pedido>();
+        public DbSet<PedidoItem> PedidoItems => Set<PedidoItem>();
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+
+
+            modelBuilder.Entity<Pedido>(entity =>
+            {
+                entity.HasKey(p => p.Id);
+
+                entity.Property(p => p.Total)
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(p => p.Status)
+                    .HasMaxLength(50);
+            });
+
+            modelBuilder.Entity<PedidoItem>(entity =>
+            {
+                entity.HasKey(e => e.Id);
+
+                entity.Property(e => e.NomeProduto)
+                    .IsRequired()
+                    .HasMaxLength(150);
+
+                entity.Property(e => e.PrecoUnitario)
+                    .IsRequired()
+                    .HasColumnType("decimal(10,2)");
+
+                entity.Property(e => e.Quantidade)
+                    .IsRequired();
+            });
 
             modelBuilder.Entity<Carrinho>()
                 .HasKey(c => c.Id);
@@ -62,7 +93,7 @@ namespace GameStore.Infrastructure.Data
                 entity.Property(e => e.Nome).IsRequired().HasMaxLength(100);
                 entity.Property(e => e.Descricao).HasMaxLength(300);
                 entity.Property(e => e.Preco).IsRequired().HasColumnType("decimal(10,2)");
-                entity.HasOne(e => e.Categoria).WithMany(c => c.Produtos).HasForeignKey(p => p.CategoriaId).OnDelete(DeleteBehavior.Restrict); 
+                entity.HasOne(e => e.Categoria).WithMany(c => c.Produtos).HasForeignKey(p => p.CategoriaId).OnDelete(DeleteBehavior.Restrict);
             });
 
             modelBuilder.Entity<Categoria>(entity =>

@@ -65,7 +65,7 @@ namespace GameStore.Application.Services
 
         }
 
-        public async Task<int> AdicionarProduto(CarrinhoAdcionarItemDto dto, int userId)
+        public async Task<CarrinhoResponseDto> AdicionarProduto(CarrinhoAdcionarItemDto dto, int userId)
         {
             if (dto.Quantidade <= 0)
                 throw new ArgumentException("Quantidade Inválida");
@@ -100,10 +100,10 @@ namespace GameStore.Application.Services
                 _context.CarrinhoItems.Add(newItem);
             }
             await _context.SaveChangesAsync();
-            return userId;
+            return await ObterOuCriarCarrinho(userId);
         }
 
-        public async Task RemoverProduto(CarrinhoRemoverItemDto dto, int userId)
+        public async Task<CarrinhoResponseDto> RemoverProduto(CarrinhoRemoverItemDto dto, int userId)
         {
             var carrinho = await ObterCarrinhoInterno(userId);
 
@@ -114,6 +114,39 @@ namespace GameStore.Application.Services
 
             _context.CarrinhoItems.Remove(item);
             await _context.SaveChangesAsync();
+            return await ObterOuCriarCarrinho(userId);
+        }
+
+        public async Task<CarrinhoResponseDto> AtualizarItemCarrinho(CarrinhoAtualizarItemDto dto, int userId)
+        {
+            var carrinho = await ObterCarrinhoInterno(userId);
+            var item = carrinho.Itens.FirstOrDefault(i => i.ProdutoId == dto.ProdutId);
+
+            if (item == null)
+                throw new ArgumentException("Produto inexistente");
+
+            var novaQtn = dto.Quantidade;
+
+            if (novaQtn <= 0)
+            {
+                _context.CarrinhoItems.Remove(item);
+                await _context.SaveChangesAsync();
+                return await ObterOuCriarCarrinho(userId);
+            }
+
+            var produto = await _context.Produtos
+                .Select(p => new { p.Id, p.Estoque })
+                .FirstOrDefaultAsync(e => e.Id == dto.ProdutId);
+
+            if (produto == null)
+                throw new ArgumentException("Produto invalido");
+
+            if (produto.Estoque < novaQtn)
+                throw new ArgumentException("Estoque insuficiente");
+
+            item.Quantidade = novaQtn;
+            await _context.SaveChangesAsync();
+            return await ObterOuCriarCarrinho(userId);
         }
     }
 }
