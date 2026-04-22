@@ -1,0 +1,62 @@
+// /app/login/page.tsx
+
+"use client";
+
+import { useState } from "react";
+import { login } from "@/services/auth";
+
+export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+
+  async function handleLogin(e: React.FormEvent) {
+    e.preventDefault();
+
+    try {
+      const token = await login(email, senha);
+
+      console.log("Token:", token);
+
+      localStorage.setItem("token", token);
+
+      alert("Login realizado com sucesso!");
+    } catch (error) {
+      console.error(error);
+      alert("Email ou senha inválidos");
+    }
+  }
+
+  return (
+    <div className="flex items-center justify-center h-screen">
+      <form
+        onSubmit={handleLogin}
+        className="bg-white p-6 rounded shadow-md w-80"
+      >
+        <h1 className="text-xl mb-4">Login</h1>
+
+        <input
+          type="email"
+          placeholder="Email"
+          className="w-full mb-3 p-2 border"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+
+        <input
+          type="password"
+          placeholder="Senha"
+          className="w-full mb-3 p-2 border"
+          value={senha}
+          onChange={(e) => setSenha(e.target.value)}
+        />
+
+        <button
+          type="submit"
+          className="w-full bg-blue-500 text-white p-2"
+        >
+          Entrar
+        </button>
+      </form>
+    </div>
+  );
+}
