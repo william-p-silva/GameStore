@@ -1,5 +1,9 @@
-﻿using GameStore.Application.DTOs.Usuario;
+﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Pedido;
+using GameStore.Application.DTOs.Usuario;
 using GameStore.Application.Services;
+using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +29,7 @@ namespace GameStore.Controllers
             try
             {
                 var usuario = await _service.CriarUsuario(dto);
-                return Ok(usuario);
+                return Ok(ApiResponse<UsuarioResponseDto>.Ok(usuario));
             }
             catch (Exception ex)
             {
@@ -39,7 +43,7 @@ namespace GameStore.Controllers
             try
             {
                 var usuario = await _service.CriarUsuarioAdmin(dto);
-                return Ok(usuario);
+                return Ok(ApiResponse<UsuarioResponseDto>.Ok(usuario));
             }
             catch (Exception ex)
             {
@@ -69,7 +73,7 @@ namespace GameStore.Controllers
             try
             {
                 var usuarios = await _service.Listar(filtro);
-                return Ok(usuarios);
+                return Ok(ApiResponse<PageResultDto<UsuarioResponseDto>>.Ok(usuarios));
             }
             catch (Exception ex)
             {
@@ -84,7 +88,7 @@ namespace GameStore.Controllers
             try
             {
                 var usuario = await _service.BuscarId(id);
-                return Ok(usuario);
+                return Ok(ApiResponse<UsuarioResponseDto>.Ok(usuario));
             }
             catch (Exception ex)
             {

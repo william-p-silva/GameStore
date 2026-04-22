@@ -1,5 +1,9 @@
-﻿using GameStore.Application.DTOs.Categoria;
+﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Categoria;
+using GameStore.Application.DTOs.Produto;
 using GameStore.Application.Services;
+using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GameStore.Controllers
@@ -20,7 +24,7 @@ namespace GameStore.Controllers
             try
             {
                 var categoria = await _service.Criar(dto);
-                return Ok(categoria);
+                return Ok(ApiResponse<CategoriaResponseDto>.Ok(categoria));
             }
             catch (Exception ex)
             {
@@ -34,7 +38,7 @@ namespace GameStore.Controllers
             try
             {
                 var categorias = await _service.Listar(filtro);
-                return Ok(categorias);
+                return Ok(ApiResponse<PageResultDto<CategoriaResponseDto>>.Ok(categorias));
             }
             catch (Exception ex)
             {
@@ -50,7 +54,7 @@ namespace GameStore.Controllers
                 var categoria = await _service.BuscarId(id);
                 if (categoria == null)
                     return NotFound();
-                return Ok(categoria);
+                return Ok(ApiResponse<CategoriaResponseDto>.Ok(categoria));
             }
             catch (Exception ex)
             {

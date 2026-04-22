@@ -1,7 +1,9 @@
 ﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Categoria;
 using GameStore.Application.DTOs.Pedido;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -26,7 +28,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var pedido = await _service.CriarPedido(userId);
-                return Ok(pedido);
+                return Ok(ApiResponse<PedidoResponseDto>.Ok(pedido));
             }
             catch (Exception ex)
             {
@@ -42,7 +44,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var pedidos = await _service.Listar(filtro, userId);
-                return Ok(pedidos);
+                return Ok(ApiResponse<PageResultDto<PedidoResponseDto>>.Ok(pedidos));
             }
             catch (Exception ex)
             {
@@ -59,13 +61,29 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var pedido = await _service.BuscarId(id, userId);
-                return Ok(pedido);
+                return Ok(ApiResponse<PedidoResponseDto>.Ok(pedido));
             }
             catch (Exception ex)
             {
                 return BadRequest(ex);
             }
         }
+
+        [Authorize(Roles = Roles.Admin)]
+        [HttpGet("listarTudo")]
+        public async Task<IActionResult> ListarTudo([FromQuery] PedidofiltroAdminDto filtro)
+        {
+            try
+            {
+                var pedidos = await _service.ListarTudo(filtro);
+                return Ok(ApiResponse<PageResultDto<PedidoResponseDto>>.Ok(pedidos));
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex);
+            }
+        }
+
 
         [Authorize]
         [HttpPut("cancelar/{id:int}")]

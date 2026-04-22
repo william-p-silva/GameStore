@@ -82,12 +82,51 @@ namespace GameStore.Application.Services
             };
         }
 
+        public async Task<PageResultDto<PedidoResponseDto>> ListarTudo(PedidofiltroAdminDto filtro)
+        {
+            filtro.Normalizar();
+
+            var query = _context.Pedidos
+                .Include(p => p.Itens)
+                .Include(p => p.Usuario)
+                .AsQueryable();
+
+
+            if (!string.IsNullOrWhiteSpace(filtro.Status))
+                query = query.Where(p => p.Status == filtro.Status);
+
+            if (filtro.UsuarioId.HasValue)
+                query = query.Where(p => p.UsuarioId == filtro.UsuarioId);
+
+            return await query.ToPagedResultAsync(
+                filtro.Page,
+                filtro.PageSize,
+                pedido => new PedidoResponseDto
+                {
+                    Id = pedido.Id,
+                    CriadoEm = pedido.CriadoEm,
+                    Status = pedido.Status,
+                    UsuarioId = pedido.UsuarioId,
+                    SubTotal = pedido.Total,
+                    UsuarioNome = pedido.Usuario != null ? pedido.Usuario.Nome : "",
+
+                    Itens = pedido.Itens.Select(i => new PedidoItemResponseDto
+                    {
+                        NomeProduto = i.NomeProduto,
+                        PrecoUnitario = i.PrecoUnitario,
+                        ProdutoId = i.ProdutoId,
+                        Quantidade = i.Quantidade
+                    }).ToList()
+                });
+        }
+
+
         public async Task<PageResultDto<PedidoResponseDto>> Listar(PedidofiltroDto filtro, int userId)
         {
             filtro.Normalizar();
             var query = _context.Pedidos
                 .Include(e => e.Itens)
-                .Where(p => p.UsuarioId == userId);
+                .Where(p => p.UsuarioId == userId).AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(filtro.Status))
                 query = query.Where(e => e.Status == filtro.Status);

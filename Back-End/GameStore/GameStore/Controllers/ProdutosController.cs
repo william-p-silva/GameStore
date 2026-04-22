@@ -1,7 +1,10 @@
-﻿using GameStore.Application.DTOs.Produto;
+﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Produto;
 using GameStore.Application.Services;
 using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace GameStore.Controllers
 {
@@ -21,7 +24,7 @@ namespace GameStore.Controllers
             try
             {
                 var produto = await _service.Criar(dto);
-                return Ok(produto);
+                return Ok(ApiResponse<ProdutoResponseDto>.Ok(produto));
             }
             catch (Exception ex)
             {
@@ -50,7 +53,7 @@ namespace GameStore.Controllers
             try
             {
                 var produtos = await _service.Listar(filtro);
-                return Ok(produtos);
+                return Ok(ApiResponse<PageResultDto<ProdutoResponseDto>>.Ok(produtos));
             }
             catch (Exception ex)
             {
@@ -64,7 +67,7 @@ namespace GameStore.Controllers
             try
             {
                 var produto = await _service.BuscarId(id);
-                return Ok(produto);
+                return Ok(ApiResponse<ProdutoResponseDto>.Ok(produto));
             }
             catch (Exception ex)
             {

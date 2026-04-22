@@ -111,6 +111,8 @@ builder.Services.AddAuthentication(options =>
 
 var app = builder.Build();
 
+app.UseMiddleware<GameStore.Helpers.Middleware.ExceptionMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

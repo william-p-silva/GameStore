@@ -1,5 +1,9 @@
-﻿using GameStore.Application.DTOs.Carrinho;
+﻿using GameStore.Application.DTOs;
+using GameStore.Application.DTOs.Carrinho;
+using GameStore.Application.DTOs.Produto;
 using GameStore.Application.Services;
+using GameStore.Domain.Entities;
+using GameStore.Helpers;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -24,7 +28,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var carrinho = await _service.ObterOuCriarCarrinho(userId);
-                return Ok(carrinho);
+                return Ok(ApiResponse<CarrinhoResponseDto>.Ok(carrinho));
             }
             catch (Exception ex)
             {
@@ -41,7 +45,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var carrinho = await _service.AdicionarProduto(dto, userId);
-                return Ok(carrinho);
+                return Ok(ApiResponse<CarrinhoResponseDto>.Ok(carrinho));
             }
             catch (Exception ex)
             {
@@ -58,7 +62,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var carrinho = await _service.RemoverProduto(dto, userId);
-                return Ok(carrinho);
+                return Ok(ApiResponse<CarrinhoResponseDto>.Ok(carrinho));
             }
             catch (Exception ex)
             {
@@ -75,7 +79,7 @@ namespace GameStore.Controllers
             {
                 var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var carrinho = await _service.AtualizarItemCarrinho(dto, userId);
-                return Ok(carrinho);
+                return Ok(ApiResponse<CarrinhoResponseDto>.Ok(carrinho));
             }
             catch (Exception ex)
             {
