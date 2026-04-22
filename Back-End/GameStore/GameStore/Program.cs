@@ -36,6 +36,16 @@ builder.Services.AddScoped<ProdutoService>();
 builder.Services.AddScoped<CarrinhoService>();
 builder.Services.AddScoped<PedidoService>();
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll",
+        policy => policy
+            .AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod());
+});
+
+
 
 
 builder.Services.AddSwaggerGen(options =>
@@ -119,6 +129,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 
