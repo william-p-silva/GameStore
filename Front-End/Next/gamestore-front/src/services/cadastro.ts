@@ -10,6 +10,6 @@ export async function Cadastro(nome:string, email:string, senha:string) {
     if (!response.ok){
         throw new Error("Erro no login");
     }
-    const data = response.json();
+    const data = await response.json();
     return data;
 }

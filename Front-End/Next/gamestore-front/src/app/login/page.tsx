@@ -4,27 +4,36 @@
 
 import { useState } from "react";
 import { login } from "@/services/auth";
+import { useRouter } from "next/navigation";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [senha, setSenha] = useState("");
+  const route = useRouter();
 
-  async function handleLogin(e: React.FormEvent) {
-    e.preventDefault();
+    async function handleLogin(e: React.FormEvent) {
+        e.preventDefault();
 
-    try {
-      const token = await login(email, senha);
+        const res = await fetch("/api/login", {
+            method: "POST",
+            body: JSON.stringify({ email, senha }),
+        });
 
-      console.log("Token:", token);
+        if (!res.ok)
+          alert("Login invalido")
 
-      localStorage.setItem("token", token);
+        const me = await fetch("/api/me");
+        const user = await me.json();
+        console.log("USER:", user);
 
-      alert("Login realizado com sucesso!");
-    } catch (error) {
-      console.error(error);
-      alert("Email ou senha inválidos");
+
+        if (user.role == "admin")
+          route.push("/admin");
+        else{
+          route.push("/cliente");
+        }
     }
-  }
+  
 
   return (
     <div className="flex items-center justify-center h-screen">
