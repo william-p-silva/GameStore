@@ -1,0 +1,20 @@
+﻿@page "/login"
+@using Services
+@inject AuthService Auth
+
+<h3>Login</h3>
+
+<input @bind="email" placeholder="Email" />
+<input @bind="senha" type="password" placeholder="Senha" />
+
+<button @onclick="FazerLogin">Entrar</button>
+
+@code {
+    private string email;
+    private string senha;
+
+    private async Task FazerLogin()
+    {
+        await Auth.Login(email, senha);
+    }
+}

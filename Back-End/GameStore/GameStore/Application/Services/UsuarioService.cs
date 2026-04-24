@@ -109,8 +109,9 @@ namespace GameStore.Application.Services
             var claims = new[]
             {
                 new Claim(ClaimTypes.NameIdentifier, usuario.Id.ToString()),
-                new Claim(ClaimTypes.Email, usuario.Email),
-                new Claim(ClaimTypes.Role, usuario.Role)
+                new Claim("email", usuario.Email),
+                new Claim("role", usuario.Role),
+                new Claim("nome", usuario.Nome)
             };
 
             var key = new SymmetricSecurityKey(
@@ -157,7 +158,9 @@ namespace GameStore.Application.Services
                 {
                     Id = user.Id,
                     Nome = user.Nome,
-                    Email = user.Email
+                    Email = user.Email,
+                    Role = user.Role
+                    
                 });
         }
 
