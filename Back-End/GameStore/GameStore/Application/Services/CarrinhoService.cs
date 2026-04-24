@@ -44,7 +44,7 @@ namespace GameStore.Application.Services
             {
                 NomeProduto = i.Produto.Nome,
                 PrecoUnitario = i.PrecoUnitario,
-                PrudutoId = i.Produto.Id,
+                ProdutoId = i.Produto.Id,
                 Quantidade = i.Quantidade,
                 SubTotal = i.Quantidade * i.PrecoUnitario
             }).ToList();

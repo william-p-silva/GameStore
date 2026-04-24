@@ -1,11 +1,12 @@
+
+import { AdicionarCarrinho } from "@/components/botoes/AdicionarItemCarrinho";
+
 import { GetProdutos } from "@/services/produtos";
 
 export default async function ProdutosPage() {
     const data = await GetProdutos();
-
-    // dependendo da sua API:
-
     const produtos = data.dados.data ?? data;
+
 
     return (
         <div className="p-6">
@@ -22,7 +23,12 @@ export default async function ProdutosPage() {
                         <p className="text-gray-600">R$ {p.preco}</p>
                         <p className="text-gray-600">Estoque: {p.estoque}</p>
                         <p className="text-gray-600">Categoria: {p.categoriaNome}</p>
+                        <p className="text-gray-600">ID: {p.id}</p>
+
+                           <AdicionarCarrinho id={p.id}  />
+
                     </div>
+
                 ))}
             </div>
         </div>

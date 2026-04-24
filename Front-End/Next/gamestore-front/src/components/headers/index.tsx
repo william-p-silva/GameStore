@@ -24,7 +24,7 @@ export default async function Header() {
     return (
         <header className="bg-black text-white p-4 flex justify-between">
 
-            <h1>GameStore</h1>
+            <Link href={"/"}>GameStore</Link>
 
 
             <div className="flex gap-4 items-center">
@@ -36,9 +36,13 @@ export default async function Header() {
                 )}
 
                 {role == "admin" && (
-                    <a href="/admin" className="text-yellow-400">
+                    <Link href="/admin" className="text-yellow-400">
                         Admin
-                    </a>
+                    </Link>
+                )}
+
+                {role == 'cliente' && (
+                    <Link href={"/cliente/carrinho"}>Carrinho</Link>
                 )}
 
                 {nome != "Visitante" && (
