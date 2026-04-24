@@ -1,4 +1,4 @@
-﻿@page "/login"
+﻿@page "/"
 @using Services
 @inject AuthService Auth
 
@@ -9,12 +9,25 @@
 
 <button @onclick="FazerLogin">Entrar</button>
 
+
 @code {
     private string email;
     private string senha;
+    private string mensagem; // Variável para mostrar na tela
 
     private async Task FazerLogin()
     {
-        await Auth.Login(email, senha);
+        try
+        {
+            var token = await Auth.Login(email, senha);
+            mensagem = $"Sucesso! Token recebido: {token.Substring(0, 10)}...";
+            Console.WriteLine($"Token: {token}");
+        }
+        catch (Exception ex)
+        {
+            mensagem = $"Erro: {ex.Message}";
+        }
     }
 }
+
+<p>@mensagem</p>

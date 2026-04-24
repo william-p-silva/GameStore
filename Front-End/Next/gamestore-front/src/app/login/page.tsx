@@ -30,7 +30,7 @@ export default function LoginPage() {
         if (user.role == "admin")
           route.push("/admin");
         else{
-          route.push("/cliente");
+          route.push("/");
         }
     }
   

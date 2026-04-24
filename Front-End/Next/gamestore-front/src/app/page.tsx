@@ -4,6 +4,7 @@ export default async function ProdutosPage() {
     const data = await GetProdutos();
 
     // dependendo da sua API:
+
     const produtos = data.dados.data ?? data;
 
     return (
@@ -17,7 +18,10 @@ export default async function ProdutosPage() {
                         className="border p-4 rounded shadow"
                     >
                         <h2 className="text-lg font-bold">{p.nome}</h2>
+                        <p className="text-gray-600">{p.descricao}</p>
                         <p className="text-gray-600">R$ {p.preco}</p>
+                        <p className="text-gray-600">Estoque: {p.estoque}</p>
+                        <p className="text-gray-600">Categoria: {p.categoriaNome}</p>
                     </div>
                 ))}
             </div>

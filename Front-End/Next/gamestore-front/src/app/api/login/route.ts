@@ -1,4 +1,3 @@
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
 
 import { NextResponse } from "next/server";
 
@@ -7,7 +6,7 @@ export async function POST(req: Request) {
         const body = await req.json();
         console.log("BODY RECEBIDO:", body);
 
-        const response = await fetch("https://localhost:7220/api/usuarios/login", {
+        const response = await fetch("http://localhost:5248/api/Usuarios/login", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",

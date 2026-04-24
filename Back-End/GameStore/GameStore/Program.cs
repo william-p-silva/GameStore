@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -16,7 +15,6 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection"),
         ServerVersion.AutoDetect(builder.Configuration.GetConnectionString("DefaultConnection"))
     ));
-
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>
@@ -44,9 +42,6 @@ builder.Services.AddCors(options =>
             .AllowAnyHeader()
             .AllowAnyMethod());
 });
-
-
-
 
 builder.Services.AddSwaggerGen(options =>
 {
@@ -83,11 +78,6 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
-
-
-
-
-
 var jwtSettings = builder.Configuration.GetSection("Jwt");
 
 var key = builder.Configuration["Jwt:Key"]
@@ -115,10 +105,6 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-
-
-
-
 var app = builder.Build();
 
 app.UseMiddleware<GameStore.Helpers.Middleware.ExceptionMiddleware>();
@@ -129,7 +115,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
 
 app.UseCors("AllowAll");
 

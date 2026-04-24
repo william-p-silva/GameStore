@@ -2,7 +2,7 @@
 
 
 export async function GetProdutos() {
-    const res = await fetch("https://localhost:7220/api/produtos",{
+    const res = await fetch("http://localhost:5248/api/Produtos",{
     cache: "no-store",
     });
 
