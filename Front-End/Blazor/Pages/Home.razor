@@ -1,33 +1,92 @@
 ﻿@page "/"
 @using Services
-@inject AuthService Auth
+@using Blazor.DTOs.Produto
+@inject ProdutoService ProdutoSvc
 
-<h3>Login</h3>
 
-<input @bind="email" placeholder="Email" />
-<input @bind="senha" type="password" placeholder="Senha" />
 
-<button @onclick="FazerLogin">Entrar</button>
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-secondary">Nossos Produtos</h2>
+        <span class="badge bg-primary">@produtos.Count itens encontrados</span>
+    </div>
+
+    @if (produtos == null)
+    {
+        <div class="d-flex justify-content-center my-5">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Carregando...</span>
+            </div>
+        </div>
+    }
+    else if (!produtos.Any())
+    {
+        <div class="alert alert-info text-center">
+            Nenhum produto disponível no momento.
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+            @foreach (var produto in produtos)
+            {
+                <div class="col">
+                    <div class="card h-100 shadow-sm border-0 transition-hover">
+                        <div class="position-absolute top-0 end-0 m-2">
+                            <span class="badge bg-light text-dark shadow-sm">@produto.CategoriaNome</span>
+                        </div>
+
+                        <div class="bg-light d-flex align-items-center justify-content-center" style="height: 180px;">
+                            <i class="bi bi-box-seam display-4 text-muted"></i>
+                        </div>
+
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-dark mb-1">@produto.Nome</h5>
+                            <p class="card-text text-muted small flex-grow-1">
+                                @(produto.Descricao.Length > 80 ? produto.Descricao.Substring(0, 80) + "..." : produto.Descricao)
+                            </p>
+
+                            <div class="mt-auto">
+                                <div class="d-flex justify-content-between align-items-center mb-2">
+                                    <span class="fs-4 fw-bold text-primary">@produto.Preco.ToString("C")</span>
+                                    <span class="small @(produto.Estoque > 0 ? "text-success" : "text-danger")">
+                                        @(produto.Estoque > 0 ? $"{produto.Estoque} em estoque" : "Esgotado")
+                                    </span>
+                                </div>
+
+                                <button class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2"
+                                        disabled="@(!produto.Ativo || produto.Estoque <= 0)">
+                                    <i class="bi bi-cart-plus"></i> Detalhes
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+<style>
+    /* Efeito de elevação ao passar o mouse */
+    .transition-hover {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .transition-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+</style>
 
 
 @code {
-    private string email;
-    private string senha;
-    private string mensagem; // Variável para mostrar na tela
 
-    private async Task FazerLogin()
+    public List<ProdutoResponseDto> produtos = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            var token = await Auth.Login(email, senha);
-            mensagem = $"Sucesso! Token recebido: {token.Substring(0, 10)}...";
-            Console.WriteLine($"Token: {token}");
-        }
-        catch (Exception ex)
-        {
-            mensagem = $"Erro: {ex.Message}";
-        }
+        produtos = await ProdutoSvc.Listar();
     }
 }
 
-<p>@mensagem</p>

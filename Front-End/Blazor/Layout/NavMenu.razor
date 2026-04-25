@@ -1,35 +1,62 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="">Blazor</a>
-        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+﻿<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
+    <div class="container">
+        <a class="navbar-brand fw-bold fs-3" href="">
+            <span class="text-primary">GAME</span>STORE
+        </a>
+
+        <button class="navbar-toggler" type="button" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
-    </div>
-</div>
 
-<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> Home
-            </NavLink>
+        <div class="@NavMenuCssClass navbar-collapse justify-content-between">
+            <ul class="navbar-nav mb-2 mb-lg-0 ms-lg-4">
+                <li class="nav-item px-2">
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        Produtos
+                    </NavLink>
+                </li>
+                <li class="nav-item px-2">
+                    <NavLink class="nav-link" href="categorias">
+                        Categorias
+                    </NavLink>
+                </li>
+                <li class="nav-item px-2">
+                    <NavLink class="nav-link" href="promocoes">
+                        Promoções
+                    </NavLink>
+                </li>
+            </ul>
+
+            <div class="d-flex align-items-center gap-3">
+                <form class="d-none d-xl-flex me-2">
+                    <input class="form-control form-control-sm border-0 bg-secondary text-white"
+                           type="search" placeholder="Buscar jogos..." aria-label="Search">
+                </form>
+
+                <NavLink class="btn btn-outline-light btn-sm position-relative me-2" href="cliente/carrinho">
+                    <i class="bi bi-cart3 fs-5"></i>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                    </span>
+                </NavLink>
+
+                <div class="vr text-white opacity-25 d-none d-lg-block"></div>
+
+                <div class="d-flex gap-2">
+                    <NavLink class="btn btn-sm btn-link text-white text-decoration-none" href="login">
+                        Login
+                    </NavLink>
+                    <NavLink class="btn btn-sm btn-primary rounded-pill px-3" href="cadastro">
+                        Criar Conta
+                    </NavLink>
+                </div>
+            </div>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="counter">
-                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Counter
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="weather">
-                <span class="bi bi-list-nested-nav-menu" aria-hidden="true"></span> Weather
-            </NavLink>
-        </div>
-    </nav>
-</div>
+    </div>
+</nav>
 
 @code {
     private bool collapseNavMenu = true;
-
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     private void ToggleNavMenu()

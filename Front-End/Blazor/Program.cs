@@ -12,5 +12,8 @@ builder.Services.AddScoped(sp => new HttpClient
     BaseAddress = new Uri("http://localhost:5248/") // URL da sua API
 });
 builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<LocalStorageService>();
+builder.Services.AddScoped<TokenService>();
+builder.Services.AddScoped<ProdutoService>();
 
 await builder.Build().RunAsync();

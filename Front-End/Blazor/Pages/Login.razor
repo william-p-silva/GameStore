@@ -1,0 +1,62 @@
+﻿@page "/login"
+<PageTitle>Login</PageTitle>
+@using Services
+@using Blazor.DTOs.Usuario
+@inject AuthService Auth
+@inject NavigationManager NavigationManager
+@layout NoLayout
+
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+	<div class="card shadow-sm border-0" style="width: 100%; max-width: 400px;">
+		<div class="card-body p-4">
+			<h3 class="card-title text-center mb-4 fw-bold">Login</h3>
+
+			<EditForm Model="dto" OnValidSubmit="FazerLogin">
+				<DataAnnotationsValidator />
+
+				<div class="form-floating mb-3">
+					<InputText id="email" @bind-Value="dto.Email" class="form-control" placeholder="nome@exemplo.com" />
+					<label for="email">E-mail</label>
+				</div>
+
+				<div class="form-floating mb-3">
+					<InputText type="password" id="senha" @bind-Value="dto.Senha" class="form-control" placeholder="Senha" />
+					<label for="senha">Senha</label>
+				</div>
+
+				<div class="d-grid gap-2">
+					<button type="submit" class="btn btn-primary btn-lg mt-2">
+						Entrar
+					</button>
+				</div>
+				<div class="d-grid m-3">
+					<NavLink href="/" class="btn btn-primary btn-lg">
+						Voltar
+					</NavLink>
+				</div>
+
+				<ValidationSummary class="mt-3 text-danger small" />
+			</EditForm>
+		</div>
+	</div>
+</div>
+
+
+@code {
+
+	public LoginDto dto = new();
+
+
+	private async Task FazerLogin()
+	{
+		try
+		{
+			await Auth.Login(dto);
+
+		}
+		catch (Exception ex)
+		{
+			Console.WriteLine($"Erro: {ex.Message}");
+		}
+	}
+}
