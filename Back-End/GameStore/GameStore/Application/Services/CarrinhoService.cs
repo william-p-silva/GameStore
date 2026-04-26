@@ -46,7 +46,8 @@ namespace GameStore.Application.Services
                 PrecoUnitario = i.PrecoUnitario,
                 ProdutoId = i.Produto.Id,
                 Quantidade = i.Quantidade,
-                SubTotal = i.Quantidade * i.PrecoUnitario
+                SubTotal = i.Quantidade * i.PrecoUnitario,
+                Estoque = i.Produto.Estoque
             }).ToList();
 
             var totalItens = carrinho.Itens.Sum(e => e.Quantidade);
