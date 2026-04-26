@@ -1,4 +1,5 @@
 ﻿@using Blazor.Application.DTOs.Carrinho
+@using Blazor.Application.DTOs.Produto
 
 <div class="card shadow-sm border-0">
     <div class="table-responsive">
@@ -9,6 +10,7 @@
                     <th class="text-center">Qtd</th>
                     <th class="text-end">Unitário</th>
                     <th class="text-end pe-3">Subtotal</th>
+                    <th class="text-end"></th>
                 </tr>
             </thead>
             <tbody>
@@ -21,7 +23,21 @@
                                 <div class="fw-bold text-dark">@item.NomeProduto</div>
                             </td>
                             <td class="text-center">
-                                <span class="badge bg-light text-dark border">@item.Quantidade</span>
+                                <div class="d-flex align-items-center justify-content-center gap-2">
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            @onclick="() => AtualizarQuantidade(item, -1)"
+                                            disabled="@(item.Quantidade <= 1)">
+                                        <i class="bi bi-dash"></i>
+                                    </button>
+
+                                    <span class="fw-bold" style="min-width: 30px;">@item.Quantidade</span>
+
+                                    <button class="btn btn-sm btn-outline-secondary"
+                                            @onclick="() => AtualizarQuantidade(item, 1)"
+                                            disabled="@(item.Quantidade >= item.Estoque)">
+                                        <i class="bi bi-plus"></i>
+                                    </button>
+                                </div>
                             </td>
                             <td class="text-end text-muted">@item.PrecoUnitario.ToString("C")</td>
                             <td class="text-end fw-bold">@item.SubTotal.ToString("C")</td>
@@ -47,6 +63,26 @@
     // Adicione um EventCallback para notificar a página pai que um item deve ser removido
     [Parameter]
     public EventCallback<int> OnRemoverItem { get; set; }
+
+    // Novo parâmetro para notificar mudanças de quantidade
+    [Parameter]
+    public EventCallback<(int produtoId, int novaQuantidade)> OnAtualizarQuantidade { get; set; }
+
+    private async Task AtualizarQuantidade(ProdutoResumoDto item, int mudança)
+    {
+        int novaQtd = item.Quantidade + mudança;
+
+        // Validação de segurança (além do disabled do botão)
+        if (novaQtd >= 1 && novaQtd <= item.Estoque)
+        {
+            // 1. Atualiza localmente para resposta imediata na UI
+            item.Quantidade = novaQtd;
+
+            // 2. Notifica o componente pai/serviço para persistir a mudança (API/LocalStorage)
+            await OnAtualizarQuantidade.InvokeAsync((item.ProdutoId, novaQtd));
+        }
+    }
+
 
     private async Task RemoverItem(int produtoId)
     {

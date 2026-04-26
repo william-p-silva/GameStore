@@ -121,7 +121,7 @@ namespace GameStore.Application.Services
         public async Task<CarrinhoResponseDto> AtualizarItemCarrinho(CarrinhoAtualizarItemDto dto, int userId)
         {
             var carrinho = await ObterCarrinhoInterno(userId);
-            var item = carrinho.Itens.FirstOrDefault(i => i.ProdutoId == dto.ProdutId);
+            var item = carrinho.Itens.FirstOrDefault(i => i.ProdutoId == dto.ProdutoId);
 
             if (item == null)
                 throw new ArgumentException("Produto inexistente");
@@ -137,7 +137,7 @@ namespace GameStore.Application.Services
 
             var produto = await _context.Produtos
                 .Select(p => new { p.Id, p.Estoque })
-                .FirstOrDefaultAsync(e => e.Id == dto.ProdutId);
+                .FirstOrDefaultAsync(e => e.Id == dto.ProdutoId);
 
             if (produto == null)
                 throw new ArgumentException("Produto invalido");

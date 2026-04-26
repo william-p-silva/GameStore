@@ -73,7 +73,7 @@ namespace GameStore.Controllers
 
         [Authorize]
         [HttpPut("atualizarItem")]
-        public async Task<IActionResult> AtualizarItemCarrinho(CarrinhoAtualizarItemDto dto)
+        public async Task<IActionResult> AtualizarItemCarrinho([FromBody] CarrinhoAtualizarItemDto dto)
         {
             try
             {

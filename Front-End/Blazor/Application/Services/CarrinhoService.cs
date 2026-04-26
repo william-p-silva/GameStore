@@ -101,5 +101,23 @@ namespace Blazor.Application.Services
             
         }
 
+        public async Task<CarrinhoResponseDto> AtualizarQuantidade(AtualizarItemRequestDto dto)
+        {
+            Console.WriteLine(dto.ProdutoId);
+            var http = _clientFactory.CreateClient("Privado");
+            var response = await http.PutAsJsonAsync("api/Carrinho/atualizarItem", dto);
+            if (response.IsSuccessStatusCode)
+            {
+                var carrinho = await response.Content.ReadFromJsonAsync<ApiResponseSemPage<CarrinhoResponseDto>>();
+
+                if(carrinho != null && carrinho.Sucesso)
+                {
+                    return carrinho.Dados;
+                }
+                throw new ArgumentException("Erro.");
+            }
+            throw new ArgumentException("Erro ao comunicar com o servidor.");
+        }
+
     }
 }
