@@ -1,0 +1,38 @@
+﻿@using Blazor.Application.DTOs.Carrinho
+
+<div class="card shadow-sm border-0 pt-2">
+    <div class="card-body">
+        <h5 class="card-title mb-4">Resumo do Pedido</h5>
+
+        <div class="d-flex flex-column gap-2 mb-4">
+            <div class="d-flex justify-content-between">
+                <span class="text-muted">Produtos (@Carrinho.TotalItens):</span>
+                <span>@Carrinho.TotalCarrinho.ToString("C")</span>
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <span class="text-muted">Frete Total:</span>
+                <span class="text-success">@Carrinho.Frete.ToString("C")</span>
+            </div>
+
+            <hr class="my-2">
+
+            <div class="d-flex justify-content-between align-items-center">
+                <span class="h5 mb-0">Total:</span>
+                <span class="h4 text-primary fw-bold mb-0">@Carrinho.Total.ToString("C")</span>
+            </div>
+        </div>
+
+        <button class="btn btn-primary w-100 py-2 mb-2 fw-bold shadow-sm">
+            FINALIZAR PEDIDO
+        </button>
+
+        <a href="/" class="btn btn-link w-100 text-decoration-none text-muted btn-sm">
+            <i class="bi bi-arrow-left"></i> Continuar comprando
+        </a>
+    </div>
+</div>
+
+@code {
+    [Parameter] public CarrinhoResponseDto Carrinho { get; set; } = new();
+}

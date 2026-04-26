@@ -21,7 +21,7 @@ namespace GameStore.Controllers
         }
 
         [Authorize]
-        [HttpPost("carrinho")]
+        [HttpGet("carrinho")]
         public async Task<IActionResult> ObterCarrinho()
         {
             try

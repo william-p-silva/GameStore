@@ -17,25 +17,89 @@ namespace Blazor.Application.Services
 
         public async Task<CarrinhoResponseDto> AdicionarProdutoAoCarrinho(AdicionarProdutoRequestDto dto)
         {
-            var http = _clientFactory.CreateClient("Privado");
-
-            var response = await http.PostAsJsonAsync("api/Carrinho/adicionarItem", dto);
-
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var resultado = await response.Content.ReadFromJsonAsync<ApiResponseSemPage<CarrinhoResponseDto>>();
+                var http = _clientFactory.CreateClient("Privado");
 
-                if (resultado != null && resultado.Sucesso)
+                var response = await http.PostAsJsonAsync("api/Carrinho/adicionarItem", dto);
+
+                if (response.IsSuccessStatusCode)
                 {
-                    return resultado.Dados;
+                    var resultado = await response.Content.ReadFromJsonAsync<ApiResponseSemPage<CarrinhoResponseDto>>();
+
+                    if (resultado != null && resultado.Sucesso)
+                    {
+                        return resultado.Dados;
+                    }
+                    throw new Exception(string.Join(", ", resultado?.Erros ?? new List<string> { "Erro desconhecido" }));
                 }
-                throw new Exception(string.Join(", ", resultado?.Erros ?? new List<string> { "Erro desconhecido" }));
+                // Se cair aqui, é erro de autorização ou servidor (401, 500, etc)
+                throw new ArgumentException("Erro ao comunicar com o servidor.");
             }
-            // Se cair aqui, é erro de autorização ou servidor (401, 500, etc)
-            throw new Exception("Erro ao comunicar com o servidor.");
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao comunicar com o servidor: {ex.Message}");
+            }
+           
         }
 
 
+        public async Task<CarrinhoResponseDto> ObterCarrinho()
+        {
+
+            try
+            {
+                var http = _clientFactory.CreateClient("Privado");
+                var response = await http.GetFromJsonAsync<ApiResponseSemPage<CarrinhoResponseDto>>("api/Carrinho/carrinho");
+
+                if (response != null && response.Sucesso)
+                {
+                    return response.Dados;
+                }
+                throw new ArgumentException("Erro ao comunicar com o servidor.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao comunicar com o servidor: {ex.Message}");
+            }
+            
+        }
+
+
+        public async Task<CarrinhoResponseDto> RemoverProduto(int produtoId)
+        {
+            try
+            {
+                var http = _clientFactory.CreateClient("Privado");
+
+                var dto = new RemoverProdutoDto
+                {
+                    ProdutoId = produtoId,
+                };
+
+                var request = new HttpRequestMessage(HttpMethod.Delete, "api/Carrinho/removerItem");
+                request.Content = JsonContent.Create(dto);
+
+                var response = await http.SendAsync(request);
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var carrinho = await response.Content.ReadFromJsonAsync<ApiResponseSemPage<CarrinhoResponseDto>>();
+
+                    if (carrinho != null && carrinho.Sucesso)
+                    {
+                        return carrinho.Dados;
+                    }
+                    throw new ArgumentException("Erro no carrinho");
+                }
+                throw new ArgumentException("Erro ao comunicar com o servidor.");
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Erro ao comunicar com o servidor: {ex.Message}");
+            }
+            
+        }
 
     }
 }

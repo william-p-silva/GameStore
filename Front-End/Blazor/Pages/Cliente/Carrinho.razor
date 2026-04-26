@@ -1,7 +1,54 @@
 ﻿@page "/cliente/carrinho"
+@using Blazor.Application.DTOs.Carrinho
+@using Blazor.Application.Services
+@using Blazor.Components.Carrinho
+@inject CarrinhoService CarSvc
 
-<h3>Carrinho</h3>
 
+<div class="container my-5">
+    <h2 class="mb-4"><i class="bi bi-cart3"></i> Seu Carrinho</h2>
+
+    @if (carrinho == null)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border text-primary" role="status"></div>
+        </div>
+    }
+    else if (!carrinho.Itens.Any())
+    {
+        <div class="alert alert-info">Seu carrinho está vazio.</div>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-lg-8">
+                <Carrinholista carrinho="carrinho" OnRemoverItem="HandleRemoverItem" />
+            </div>
+            <div class="col-lg-4">
+                <CarrinhoResumo Carrinho="carrinho" />
+            </div>
+        </div>
+    }
+</div>
 @code {
+    public CarrinhoResponseDto? carrinho { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            carrinho = await CarSvc.ObterCarrinho();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+    }
+
+    private async Task HandleRemoverItem(int produtoId)
+    {
+        await CarSvc.RemoverProduto(produtoId);
+        carrinho = await CarSvc.ObterCarrinho();
+
+    }
 }
