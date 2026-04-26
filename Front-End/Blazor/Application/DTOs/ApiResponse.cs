@@ -1,4 +1,4 @@
-﻿namespace Blazor.DTOs
+﻿namespace Blazor.Application.DTOs
 {
     public class ApiResponse<T>
     {

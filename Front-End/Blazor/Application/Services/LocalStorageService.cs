@@ -1,7 +1,7 @@
 ﻿using Microsoft.JSInterop;
 
 
-namespace Blazor.Services
+namespace Blazor.Application.Services
 {
     public class LocalStorageService
     {

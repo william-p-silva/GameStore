@@ -1,10 +1,9 @@
-﻿using Blazor.DTOs.Usuario;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
 using System.IdentityModel.Tokens.Jwt;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components;
+using Blazor.Application.DTOs.Usuario;
 
-namespace Blazor.Services
+namespace Blazor.Application.Services
 {
     public class AuthService
     {
@@ -13,9 +12,9 @@ namespace Blazor.Services
         private readonly NavigationManager _navigationManager; // Adicione este campo
 
         // Adicione o NavigationManager no construtor
-        public AuthService(HttpClient http, TokenService tokenSvc, NavigationManager navigationManager)
+        public AuthService(IHttpClientFactory clientFactory, TokenService tokenSvc, NavigationManager navigationManager)
         {
-            _http = http;
+            _http = clientFactory.CreateClient("Publico");
             _tokenSvc = tokenSvc;
             _navigationManager = navigationManager;
         }
@@ -27,7 +26,7 @@ namespace Blazor.Services
             {
                 var resultado = await response.Content.ReadFromJsonAsync<LoginResponseDto>();
 
-                var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+                var handler = new JwtSecurityTokenHandler();
                 var jwtToken = handler.ReadJwtToken(resultado.Token);
 
                 var role = jwtToken.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
@@ -44,7 +43,7 @@ namespace Blazor.Services
                         _navigationManager.NavigateTo("/cliente/carrinho");
                         break;
                     default:
-                        _navigationManager.NavigateTo("/");
+                        _navigationManager.NavigateTo("/login");
                         break;
                 }
             }

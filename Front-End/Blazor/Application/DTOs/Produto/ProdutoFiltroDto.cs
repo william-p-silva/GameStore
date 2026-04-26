@@ -1,4 +1,4 @@
-﻿namespace Blazor.DTOs.Produto
+﻿namespace Blazor.Application.DTOs.Produto
 {
     public class ProdutoFiltroDto
     {

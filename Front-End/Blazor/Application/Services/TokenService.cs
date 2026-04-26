@@ -1,4 +1,4 @@
-﻿namespace Blazor.Services
+﻿namespace Blazor.Application.Services
 {
     public class TokenService
     {

@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace Blazor.DTOs.Usuario
+namespace Blazor.Application.DTOs.Usuario
 {
     public class LoginDto
     {
