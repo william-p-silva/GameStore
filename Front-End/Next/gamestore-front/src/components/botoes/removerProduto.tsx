@@ -1,6 +1,6 @@
 "use client"
 
-import { RemoverProdutoCarrinho } from "@/services/carrinho/removerProdutoCarrinho";
+import { RemoverItemDoCarrinho } from "@/services/carrinho";
 
 interface Props{
   produtoId: number
@@ -12,7 +12,7 @@ interface Props{
 export function RemoverProduto({produtoId}: Props){
        async function handleAdd() {
             try {
-                await RemoverProdutoCarrinho(produtoId)
+                await RemoverItemDoCarrinho(produtoId)
                 alert("Removido do carrinho");
             } catch {
                 alert("Erro ao remover");

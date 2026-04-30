@@ -1,53 +1,52 @@
+"use client"
+
 import { RemoverProduto } from "@/components/botoes/removerProduto";
-import { ListarCarrinho } from "@/services/carrinho/listarItensCarrinho";
+import { ListarItensDoCarrinho } from "@/services/carrinho"
+import { CarrinhoResponse } from "@/types/carrinho";
+import { useEffect, useState } from "react";
 
 
 
-export default async function Carrinho() {
 
+export default function Carrinho() {
 
-    const data = await ListarCarrinho();
-    if (!data.sucesso) {
-        console.log("Erro na API")
-        throw new Error("Erro na API")
-    }
-    const itens = data.dados.itens ?? data;
-    const carrinho = data.dados ?? data;
+    const [carrinho, setCarrinho] = useState<CarrinhoResponse | null>(null)
 
-    const frete = Math.round((carrinho.totalCarrinho * 0.20) * 100) /100
+    useEffect(() => {
+        async function ListarCarrinho() {
+            const data = await ListarItensDoCarrinho();
+            setCarrinho(data)
+        }
+        ListarCarrinho()
+    }, []);
+
+    if (carrinho == null) return <p>Carregando ...</p>
+
+    const itens = carrinho.dados.itens;
+    const frete = carrinho.dados.totalCarrinho * 0.20;
 
     return (
         <div className="w-full p-4">
-            {itens != null && (
+            {itens.length > 0 ? (
                 <>
-                    {itens.map((p: any) => (
-                        <div
-                            key={p.produtoId}
-                            className="w-full p-2 bg-gray-400 my-3 rounded-2xl"
-                        >
-
+                    {itens.map((p) => (
+                        <div key={p.produtoId} >
                             <h2 className="text-lg font-bold">{p.nomeProduto}</h2>
-                            <p className="text-gray-50">R$ {p.produtoId}</p>
                             <p className="text-gray-50">R$ {p.precoUnitario}</p>
                             <p className="text-gray-50">Quantidade: {p.quantidade}</p>
-                            <p className="text-gray-50">R$ {p.subTotal}</p>
-                            <RemoverProduto produtoId={p.produtoId} />
+                            <p className="text-gray-50">Subtotal: R$ {p.subTotal}</p>
+                            
                         </div>
-
-                    ))
-                    }
+                    ))}
                 </>
+            ) : (
+                <p>Você ainda não tem itens no carrinho</p>
             )}
             <div className="w-full p-2 bg-gray-400 my-3 rounded-2xl">
-                <p>Produtos:{carrinho.totalItens}</p>
-                <p>Total: R${carrinho.totalCarrinho}</p>
-                <p>frete: {frete}</p>
+                <p>Produtos: {carrinho.dados.totalItens}</p>
+                <p>Total: R$ {carrinho.dados.totalCarrinho}</p>
+                <p>Frete: R$ {frete.toFixed(2)}</p>
             </div>
-            {itens == null && (
-                <div>
-                    <p>Você ainda não tem produtos no carrinho</p>
-                </div>
-            )}
         </div>
 
     )

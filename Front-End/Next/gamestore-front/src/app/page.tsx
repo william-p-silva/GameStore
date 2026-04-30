@@ -1,12 +1,26 @@
+"use client"
 
-import { AdicionarCarrinho } from "@/components/botoes/AdicionarItemCarrinho";
 
 import { GetProdutos } from "@/services/produtos";
+import { Produto } from "@/types/produto";
+import { useEffect, useState } from "react";
 
-export default async function ProdutosPage() {
-    const data = await GetProdutos();
-    const produtos = data.dados.data ?? data;
+export default function ProdutosPage() {
 
+    const [produtos, setProdutos] = useState<Produto[] | null>(null)
+
+
+    useEffect(() => {
+        async function listarProdutos() {
+            const response = await GetProdutos();
+            // response.dados.data é onde está a lista de produtos
+            setProdutos(response.dados.data);
+        }
+        listarProdutos()
+    }, []);
+
+    // enquanto os dados não chegam, mostra loading
+    if (!produtos) return <p>Carregando produtos...</p>;
 
     return (
         <div className="p-6">
@@ -25,7 +39,7 @@ export default async function ProdutosPage() {
                         <p className="text-gray-600">Categoria: {p.categoriaNome}</p>
                         <p className="text-gray-600">ID: {p.id}</p>
 
-                           <AdicionarCarrinho id={p.id}  />
+
 
                     </div>
 
