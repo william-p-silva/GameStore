@@ -21,6 +21,7 @@ export async function apiRequest(path: string, options?: RequestInit, isPublic: 
     }
 
     if (!response.ok) throw new Error(`Erro: ${response.status}`);
+    
     return response.json();
 
 }

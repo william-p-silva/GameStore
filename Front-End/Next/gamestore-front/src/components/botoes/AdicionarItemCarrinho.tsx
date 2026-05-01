@@ -1,6 +1,7 @@
 "use client"
 
-import { AdicionarItemCarrinho } from "@/services/carrinho/adicionarItemCarrinho"
+import { AdicionarItemAoCarrinho } from "@/services/carrinho";
+
 
 interface Props{
     id: number
@@ -10,7 +11,7 @@ interface Props{
 export function AdicionarCarrinho({id}: Props) {
     async function handleAdd() {
         try {
-            await AdicionarItemCarrinho(id);
+            await AdicionarItemAoCarrinho(id);
             
             alert("Adicionado ao carrinho");
             window.location.reload();

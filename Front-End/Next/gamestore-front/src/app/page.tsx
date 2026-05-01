@@ -1,6 +1,8 @@
 "use client"
 
 
+import { AdicionarCarrinho } from "@/components/botoes/AdicionarItemCarrinho";
+import { CarregandoPadrao } from "@/components/carregando/padrao";
 import { GetProdutos } from "@/services/produtos";
 import { Produto } from "@/types/produto";
 import { useEffect, useState } from "react";
@@ -20,7 +22,7 @@ export default function ProdutosPage() {
     }, []);
 
     // enquanto os dados não chegam, mostra loading
-    if (!produtos) return <p>Carregando produtos...</p>;
+    if (!produtos) return <CarregandoPadrao /> ;
 
     return (
         <div className="p-6">
@@ -38,8 +40,7 @@ export default function ProdutosPage() {
                         <p className="text-gray-600">Estoque: {p.estoque}</p>
                         <p className="text-gray-600">Categoria: {p.categoriaNome}</p>
                         <p className="text-gray-600">ID: {p.id}</p>
-
-
+                        <AdicionarCarrinho id={p.id} />
 
                     </div>
 

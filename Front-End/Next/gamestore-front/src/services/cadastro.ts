@@ -1,6 +1,6 @@
-import { useRouter } from "next/navigation";
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 export async function Cadastro(nome:string, email:string, senha:string) {
-    const response = await fetch("http://localhost:5248/api/Usuarios", {
+    const response = await fetch(`${BASE_URL}/Usuarios`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
