@@ -4,15 +4,14 @@ import { RemoverItemDoCarrinho } from "@/services/carrinho";
 
 interface Props{
   produtoId: number
+  onRemovido: () => void
 }
 
-
-
-
-export function RemoverProduto({produtoId}: Props){
+export function RemoverProduto({produtoId, onRemovido}: Props){
        async function handleAdd() {
             try {
                 await RemoverItemDoCarrinho(produtoId)
+                onRemovido()
                 alert("Removido do carrinho");
             } catch {
                 alert("Erro ao remover");

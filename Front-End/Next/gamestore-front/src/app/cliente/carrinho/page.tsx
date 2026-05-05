@@ -21,6 +21,11 @@ export default function Carrinho() {
         ListarCarrinho()
     }, []);
 
+    async function AtualizarCarrinho() {
+        const data = await ListarItensDoCarrinho();
+        setCarrinho(data)
+    }
+
     if (carrinho == null) return <Carregando />;
 
     const itens = carrinho.dados.itens;
@@ -42,7 +47,7 @@ export default function Carrinho() {
                                 <div className="flex gap-4 mt-1 text-sm text-gray-600">
                                     <p>Qtd: <span>-</span> <span className="font-medium">{p.quantidade}</span> <span>+</span> </p>
                                     <p>Unitário: <span className="font-medium text-emerald-600">R$ {p.precoUnitario}</span></p>
-                                    <RemoverProduto produtoId={p.produtoId} />
+                                    <RemoverProduto produtoId={p.produtoId} onRemovido={AtualizarCarrinho}  />
                                 </div>
                             </div>
 
