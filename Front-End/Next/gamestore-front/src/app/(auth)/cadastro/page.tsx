@@ -1,6 +1,7 @@
 'use client'
 
 import { Cadastro } from "@/services/cadastro";
+import { useRouter } from "next/navigation";
 import { useState } from "react"
 
 
@@ -17,6 +18,7 @@ export default function CadastroPage() {
         try {
             setLoanding(true);
             const data = await Cadastro(nome, email, senha);
+
             alert("Cadastro realizado com sucesso");
         }
         catch (error) {

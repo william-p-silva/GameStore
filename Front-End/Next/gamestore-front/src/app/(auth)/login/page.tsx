@@ -27,11 +27,16 @@ export default function LoginPage() {
         console.log("USER:", user);
 
 
-        if (user.role == "admin")
+        if (user.role == "admin"){
           route.push("/admin");
+          route.refresh()
+        }
         else{
           route.push("/");
+          route.refresh()
         }
+
+        route.refresh()
     }
   
 

@@ -1,4 +1,6 @@
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL
+
+
 export async function Cadastro(nome:string, email:string, senha:string) {
     const response = await fetch(`${BASE_URL}/Usuarios`, {
         method: "POST",
