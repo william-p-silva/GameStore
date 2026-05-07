@@ -30,16 +30,18 @@ export default async function Header() {
         <UserControl email={email} nome={nome}  >
             <header className="flex items-center justify-between w-full py-3 px-6 border-b border-gray-300">
                 {/* Hamburguer */}
-                <div className="">
+                <div className="mt-2">
 
                     <MenuTrigger />
 
                 </div>
 
                 {/* LogoTipo */}
-                <Link href={"/"}>
-                    <h1 className="text-2xl text-gray-800 font-bold ">GameStore</h1>
-                </Link>
+                <div>
+                    <Link href={"/"}>
+                        <h1 className="text-2xl text-cinza font-bold ">GameStore</h1>
+                    </Link>
+                </div>
 
                 {/* Barra de pesquisa */}
                 <div className="flex-1 mx-4 max-w-2xl"> {/* flex-1 para crescer, mx-4 para o "respiro" */}
@@ -58,11 +60,11 @@ export default async function Header() {
                     <AvatarTrigger email={email} nome={nome} />
                     
                 ) : (
-                    <div className="text-gray-800 font-medium text-lg flex gap-3">
+                    <div className="text-cinza font-medium text-lg flex gap-3">
                         <Link href={"/cadastro"} className="hover:bg-slate-200/80  rounded-xl px-3.5 py-1.5 cursor-pointer">
                             Cadastre-se
                         </Link >
-                        <Link href={"/login"} className="text-white bg-gray-800 rounded-xl px-3.5 py-1.5 cursor-pointer" >
+                        <Link href={"/login"} className="text-white bg-cinza rounded-xl px-3.5 py-1.5 cursor-pointer" >
                             Entrar
                         </Link>
 
@@ -71,7 +73,7 @@ export default async function Header() {
 
 
                 {/* Carrinho */}
-                <Link href={"/cliente/carrinho"} className="text-gray-800">
+                <Link href={"/cliente/carrinho"} className="text-cinza">
                     <ShoppingCart />
                 </Link >
 

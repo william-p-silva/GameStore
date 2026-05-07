@@ -1,2 +1,6 @@
 @import "tailwindcss";
 
+
+@theme{
+    --color-cinza: #374151;
+}

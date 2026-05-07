@@ -4,6 +4,8 @@ import { ProdutoResponse } from "@/types/produto";
 
 
 export async function GetProdutos(): Promise<ProdutoResponse> {
-    const data = await apiRequest("Produtos", {}, true)
+    const data = await apiRequest("Produtos", {
+        method: "GET",
+    }, true)
     return data;
 }
